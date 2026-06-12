@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 
 const SUPABASE_URL = "https://ulcusvxdyasgngymrbgb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_j9bItmvXx9N_k9hONT1J4w_gh0f7r0W";
+const EMAILJS_SERVICE = "service_8nsnt6w";
+const EMAILJS_TEMPLATE = "template_yp7zwdf";
+const EMAILJS_PUBLIC = "OxM7F2nrygHbJgT9o";
 
 async function saveProfile(name, domain, city, score) {
   try {
@@ -30,6 +33,22 @@ async function getProfiles() {
     if (res.ok) return await res.json();
     return [];
   } catch { return []; }
+}
+
+async function sendCompanyEmail(company_name, sector, spots) {
+  try {
+    const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        service_id: EMAILJS_SERVICE,
+        template_id: EMAILJS_TEMPLATE,
+        user_id: EMAILJS_PUBLIC,
+        template_params: { company_name, sector, spots }
+      })
+    });
+    return res.ok;
+  } catch { return false; }
 }
 
 const COLORS = {
@@ -183,6 +202,15 @@ export default function Matchkap() {
     setChallengeStep("result");
   };
 
+  const handleCompanySubmit = async () => {
+    setFormDone(true);
+    await sendCompanyEmail(
+      companyForm.name || "Inconnu",
+      companyForm.sector || "Non specifie",
+      companyForm.spots || "0"
+    );
+  };
+
   const renderHome = () => (
     <div style={{ paddingBottom: 80 }}>
       <div style={{ textAlign: "center", padding: "80px 20px 60px", position: "relative" }}>
@@ -198,12 +226,8 @@ export default function Matchkap() {
           Fini les CVs ignores. Sur Matchkap tu passes un challenge de 15 minutes, les entreprises voient tes vrais skills.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <button onClick={goCandidat} style={{ background: COLORS.accent, border: "none", borderRadius: 12, padding: "16px 32px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
-            Je suis candidat
-          </button>
-          <button onClick={() => setPage("entreprise")} style={{ background: "transparent", border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: "16px 32px", color: COLORS.text, fontSize: 16, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-            Je recrute
-          </button>
+          <button onClick={goCandidat} style={{ background: COLORS.accent, border: "none", borderRadius: 12, padding: "16px 32px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Je suis candidat</button>
+          <button onClick={() => setPage("entreprise")} style={{ background: "transparent", border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: "16px 32px", color: COLORS.text, fontSize: 16, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Je recrute</button>
         </div>
       </div>
 
@@ -282,7 +306,7 @@ export default function Matchkap() {
             <input key={f.key} value={candidatForm[f.key]} onChange={e => setCandidatForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder} style={{ width: "100%", background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 10, color: COLORS.text, fontSize: 14, padding: "12px 16px", marginBottom: 10, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
           ))}
         </div>
-        <button onClick={() => { setFormDone(true); setChallengeStep("challenge"); }} style={{ width: "100%", background: COLORS.accent, border: "none", borderRadius: 12, padding: "16px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+        <button onClick={() => { setChallengeStep("challenge"); }} style={{ width: "100%", background: COLORS.accent, border: "none", borderRadius: 12, padding: "16px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
           Commencer le challenge
         </button>
       </div>
@@ -296,9 +320,7 @@ export default function Matchkap() {
 
     if (challengeStep === "result") return (
       <div style={{ maxWidth: 560, margin: "60px auto", padding: "0 20px 80px", textAlign: "center" }}>
-        {saving ? (
-          <div style={{ color: COLORS.muted, fontSize: 16, marginBottom: 20 }}>Sauvegarde de ton profil...</div>
-        ) : null}
+        {saving && <div style={{ color: COLORS.muted, fontSize: 14, marginBottom: 16 }}>Sauvegarde en cours...</div>}
         <div style={{ width: 120, height: 120, borderRadius: "50%", margin: "0 auto 24px", background: `conic-gradient(${finalScore >= 70 ? COLORS.green : COLORS.accent} ${finalScore * 3.6}deg, ${COLORS.border} 0deg)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ width: 96, height: 96, borderRadius: "50%", background: COLORS.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 900, color: finalScore >= 70 ? COLORS.green : COLORS.accent }}>{finalScore}</div>
         </div>
@@ -325,7 +347,7 @@ export default function Matchkap() {
       <div style={{ maxWidth: 560, margin: "60px auto", padding: "0 20px 80px", textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 20 }}>✅</div>
         <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 16 }}>Demande envoyee !</h2>
-        <p style={{ color: COLORS.muted, marginBottom: 32, lineHeight: 1.6 }}>L'equipe Matchkap vous contacte sous 24h a l'adresse email fournie.</p>
+        <p style={{ color: COLORS.muted, marginBottom: 32, lineHeight: 1.6 }}>L'equipe Matchkap vous contacte sous 24h. Verifiez votre boite mail.</p>
         <button onClick={() => { setFormDone(false); setPage("classement"); }} style={{ background: COLORS.accent, border: "none", borderRadius: 12, padding: "14px 28px", color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Voir les profils</button>
       </div>
     );
@@ -347,7 +369,7 @@ export default function Matchkap() {
           {[{ key: "name", placeholder: "Nom de l'entreprise" }, { key: "sector", placeholder: "Secteur (ex: IT, Finance...)" }, { key: "spots", placeholder: "Nombre de postes a pourvoir" }].map(f => (
             <input key={f.key} value={companyForm[f.key]} onChange={e => setCompanyForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder} style={{ width: "100%", background: COLORS.bg, border: `1px solid ${COLORS.border}`, borderRadius: 10, color: COLORS.text, fontSize: 14, padding: "12px 16px", marginBottom: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
           ))}
-          <button onClick={() => setFormDone(true)} style={{ width: "100%", background: COLORS.green, border: "none", borderRadius: 12, padding: "14px", color: "#000", fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", marginTop: 8 }}>
+          <button onClick={handleCompanySubmit} style={{ width: "100%", background: COLORS.green, border: "none", borderRadius: 12, padding: "14px", color: "#000", fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", marginTop: 8 }}>
             Acces gratuit 30 jours
           </button>
           <p style={{ color: COLORS.muted, fontSize: 12, textAlign: "center", marginTop: 12 }}>Sans engagement · Sans CB</p>
