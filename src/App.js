@@ -72,7 +72,6 @@ function ChallengeFlow({ onDone }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [showResult, setShowResult] = useState(false);
 
   const cur = all[step];
   const isLast = step === all.length - 1;
@@ -145,7 +144,7 @@ function ChallengeFlow({ onDone }) {
 
 export default function Matchkap() {
   const [page, setPage] = useState("home");
-  const [challengeStep, setChallengeStep] = useState("intro"); // intro | challenge | result
+  const [challengeStep, setChallengeStep] = useState("intro");
   const [finalScore, setFinalScore] = useState(null);
   const [candidatForm, setCandidatForm] = useState({ name: "", domain: "", city: "" });
   const [companyForm, setCompanyForm] = useState({ name: "", sector: "", spots: "" });
@@ -153,7 +152,6 @@ export default function Matchkap() {
 
   const renderHome = () => (
     <div>
-      {/* Hero */}
       <div style={{ textAlign: "center", padding: "80px 20px 60px", position: "relative" }}>
         <div style={{
           position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)",
@@ -196,7 +194,6 @@ export default function Matchkap() {
         </div>
       </div>
 
-      {/* Stats */}
       <div style={{ display: "flex", gap: 1, justifyContent: "center", flexWrap: "wrap", marginBottom: 80, padding: "0 20px" }}>
         {[
           { n: "2 min", label: "Délai de réponse moyen" },
@@ -214,11 +211,8 @@ export default function Matchkap() {
         ))}
       </div>
 
-      {/* Comment ça marche */}
       <div style={{ maxWidth: 800, margin: "0 auto 80px", padding: "0 20px" }}>
-        <h2 style={{ textAlign: "center", fontSize: 28, fontWeight: 800, marginBottom: 40 }}>
-          Comment ça marche ?
-        </h2>
+        <h2 style={{ textAlign: "center", fontSize: 28, fontWeight: 800, marginBottom: 40 }}>Comment ça marche ?</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {[
             { step: "01", icon: "⚡", title: "Tu passes le challenge", desc: "15 minutes. Questions techniques, logique, personnalité. On mesure ce que tu vaux vraiment — pas ce que t'as mis sur ton CV." },
@@ -245,7 +239,6 @@ export default function Matchkap() {
         </div>
       </div>
 
-      {/* Profils récents */}
       <div style={{ maxWidth: 800, margin: "0 auto 80px", padding: "0 20px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <h2 style={{ fontSize: 24, fontWeight: 800 }}>Profils récents</h2>
@@ -409,7 +402,6 @@ export default function Matchkap() {
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
         <h2 style={{ fontSize: 32, fontWeight: 900, marginBottom: 8 }}>Recrutez autrement.</h2>
         <p style={{ color: COLORS.muted, marginBottom: 40, fontSize: 16 }}>Accédez à des profils pré-qualifiés. Zéro CV. Que des skills prouvés.</p>
-
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 48 }}>
           {[
             { icon: "⚡", title: "Réponse en 2 min", desc: "Vous voyez le score du candidat avant même son nom" },
@@ -426,7 +418,6 @@ export default function Matchkap() {
             </div>
           ))}
         </div>
-
         <div style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 16, padding: 28 }}>
           <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 20 }}>Demande d'accès gratuit</div>
           {[
@@ -506,7 +497,6 @@ export default function Matchkap() {
 
   return (
     <div style={{ background: COLORS.bg, minHeight: "100vh", color: COLORS.text, fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif" }}>
-      {/* Nav */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 100,
         background: COLORS.bg + "ee", backdropFilter: "blur(12px)",
@@ -539,8 +529,6 @@ export default function Matchkap() {
           Passer le challenge
         </button>
       </nav>
-
-      {/* Page */}
       {page === "home" && renderHome()}
       {page === "candidat" && renderCandidat()}
       {page === "entreprise" && renderEntreprise()}
