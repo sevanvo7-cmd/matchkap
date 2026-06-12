@@ -18,7 +18,7 @@ const NAV_ITEMS = ["Accueil", "Candidats", "Entreprises", "Classement"];
 
 const CHALLENGES = {
   IT: [
-    { q: "C'est quoi la différence entre RAM et ROM ?", a: "RAM = mémoire temporaire (vive), ROM = mémoire permanente (lecture seule)", type: "text" },
+    e)", type: "text" },
     { q: "Un client envoie une requête à un serveur. Qui répond ?", options: ["Le client", "Le serveur", "Le réseau", "Le router"], correct: 1 },
     { q: "Qu'est-ce qu'une adresse IP ?", a: "Identifiant unique d'un appareil sur un réseau", type: "text" },
     { q: "CSS sert à quoi ?", options: ["Structurer le contenu", "Styliser l'apparence", "Gérer la logique", "Stocker des données"], correct: 1 },
