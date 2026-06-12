@@ -66,25 +66,105 @@ const COLORS = {
 
 const NAV_ITEMS = ["Accueil", "Candidats", "Entreprises", "Classement"];
 
-const CHALLENGES = {
+const QUESTION_BANKS = {
   IT: [
-    { q: "Difference entre RAM et ROM ?", options: ["RAM = temporaire, ROM = permanente", "RAM = permanente, ROM = temporaire", "Les deux sont identiques", "RAM = disque dur"], correct: 0 },
-    { q: "Un client envoie une requete a un serveur. Qui repond ?", options: ["Le client", "Le serveur", "Le reseau", "Le router"], correct: 1 },
-    { q: "Une adresse IP c'est quoi ?", options: ["Un identifiant unique sur un reseau", "Un mot de passe reseau", "Un type de cable", "Un navigateur internet"], correct: 0 },
+    { q: "Difference entre RAM et ROM ?", options: ["RAM = temporaire, ROM = permanente", "RAM = permanente, ROM = temporaire", "Les deux pareilles", "RAM = disque dur"], correct: 0 },
     { q: "CSS sert a quoi ?", options: ["Structurer le contenu", "Styliser l'apparence", "Gerer la logique", "Stocker des donnees"], correct: 1 },
     { q: "Que signifie HTML ?", options: ["HyperText Markup Language", "High Tech Modern Language", "HyperText Machine Logic", "Home Tool Markup Language"], correct: 0 },
+    { q: "Un client envoie une requete a un serveur. Qui repond ?", options: ["Le client", "Le serveur", "Le reseau", "Le routeur"], correct: 1 },
+    { q: "Que signifie IP dans adresse IP ?", options: ["Internet Protocol", "Internal Process", "Input Port", "Internet Page"], correct: 0 },
+    { q: "Quel port utilise HTTPS par defaut ?", options: ["80", "21", "443", "8080"], correct: 2 },
+    { q: "Que signifie DNS ?", options: ["Domain Name System", "Digital Network Service", "Data Node Server", "Dynamic Name Setup"], correct: 0 },
+    { q: "La commande ping sert a tester quoi ?", options: ["La connexion reseau", "La vitesse CPU", "L'espace disque", "La memoire RAM"], correct: 0 },
+    { q: "Difference entre TCP et UDP ?", options: ["TCP est fiable, UDP est rapide sans garantie", "UDP est fiable, TCP est rapide", "Les deux sont identiques", "TCP est sans fil"], correct: 0 },
+    { q: "Que fait la commande ipconfig ?", options: ["Affiche la config reseau", "Installe un driver", "Formate le disque", "Lance un scan virus"], correct: 0 },
+    { q: "Qu'est-ce qu'une adresse MAC ?", options: ["Identifiant physique unique d'une carte reseau", "Un type de mot de passe", "Une adresse email Apple", "Un protocole de securite"], correct: 0 },
+    { q: "Role d'un pare-feu ?", options: ["Filtrer le trafic reseau", "Accelerer le processeur", "Gerer la memoire", "Sauvegarder les fichiers"], correct: 0 },
+    { q: "Que signifie VLAN ?", options: ["Virtual Local Area Network", "Very Large Access Node", "Virtual Link Adapter Network", "Verified LAN"], correct: 0 },
+    { q: "Quelle couche OSI gere le routage ?", options: ["Couche 1", "Couche 2", "Couche 3", "Couche 4"], correct: 2 },
+    { q: "Un sous-reseau /24 contient combien d'adresses ?", options: ["128", "256", "512", "1024"], correct: 1 },
   ],
-  PERSO: [
-    { q: "Bug critique 30min avant une demo client. Tu fais quoi ?", options: ["Tu paniques", "Tu previens ton responsable et cherches une solution", "Tu ignores", "Tu annules la demo"], correct: 1 },
-    { q: "Desaccord avec ton tuteur sur une solution. Tu fais quoi ?", options: ["Tu fais ce qu'il dit sans rien dire", "Tu expliques ton point de vue puis tu suis sa decision", "Tu fais a ta facon", "Tu te plaints aux RH"], correct: 1 },
-    { q: "On te confie une tache que t'as jamais faite. Ta reaction ?", options: ["Tu refuses", "Tu demandes de l'aide et cherches sur internet", "Tu fais semblant de savoir", "Tu attends que quelqu'un d'autre le fasse"], correct: 1 },
+  COMMERCE: [
+    { q: "Qu'est-ce que le CA d'une entreprise ?", options: ["Chiffre d'Affaires total des ventes", "Capital Annuel investi", "Cout d'Achat des produits", "Charge Administrative"], correct: 0 },
+    { q: "La marge commerciale c'est ?", options: ["Prix de vente - Cout d'achat", "CA - Charges totales", "Benefice net apres impots", "CA divise par 2"], correct: 0 },
+    { q: "BtoB signifie ?", options: ["Business to Business", "Budget to Balance", "Brand to Buyer", "Base to Base"], correct: 0 },
+    { q: "La TVA au taux normal en France ?", options: ["10%", "15%", "20%", "25%"], correct: 2 },
+    { q: "L'argumentaire CAP c'est ?", options: ["Caracteristique, Avantage, Preuve", "Client, Achat, Prix", "Contact, Action, Prospect", "Cout, Analyse, Produit"], correct: 0 },
+    { q: "Le taux de conversion mesure quoi ?", options: ["% de prospects devenus clients", "% de remise accordee", "% de marge sur les ventes", "% de clients perdus"], correct: 0 },
+    { q: "Un bon de commande c'est quoi ?", options: ["Document formalisant une commande client", "Facture de paiement", "Contrat de travail", "Fiche produit"], correct: 0 },
+    { q: "La fidelisation coute moins cher que la prospection ?", options: ["Vrai", "Faux", "Depend du secteur", "Impossible a savoir"], correct: 0 },
+    { q: "Le merchandising c'est ?", options: ["Optimisation de la presentation en point de vente", "Technique de negociation", "Strategie de prix", "Gestion des stocks"], correct: 0 },
+    { q: "Un prospect froid c'est ?", options: ["Contact qui ne connait pas encore l'entreprise", "Client qui achete rarement", "Fournisseur inactif", "Employe demotive"], correct: 0 },
+    { q: "Le NPS mesure quoi ?", options: ["Satisfaction et fidelite client", "Score de performance commerciale", "Note produit sur le marche", "Taux de negociation reussi"], correct: 0 },
+    { q: "Qu'est-ce que la valeur ajoutee ?", options: ["CA - Consommations intermediaires", "Benefice - Impots", "Recettes - Depenses", "CA - Salaires"], correct: 0 },
+  ],
+  MARKETING: [
+    { q: "Les 4P du marketing mix ?", options: ["Produit, Prix, Place, Promotion", "Prospect, Profit, Part, Pub", "Plan, Prix, Pub, Produit", "Produit, Performance, Place, Profit"], correct: 0 },
+    { q: "Une cible marketing c'est ?", options: ["Le segment de clientele vise", "L'objectif de ventes", "Le budget pub", "Le concurrent principal"], correct: 0 },
+    { q: "Le SEO c'est ?", options: ["Optimisation pour les moteurs de recherche", "Strategie d'emailing", "Publicite reseaux sociaux", "Analyse des donnees clients"], correct: 0 },
+    { q: "Un KPI c'est ?", options: ["Indicateur cle de performance", "Type de contenu publicitaire", "Outil de gestion stocks", "Technique de vente"], correct: 0 },
+    { q: "Taux d'engagement reseaux sociaux = ?", options: ["Interactions / portee totale", "Nombre d'abonnes", "Nombre de publications", "Budget depense"], correct: 0 },
+    { q: "Un persona marketing c'est ?", options: ["Profil fictif representant le client ideal", "Pseudonyme utilise en pub", "Personnage de pub TV", "Type de contenu video"], correct: 0 },
+    { q: "Le tunnel de conversion represente ?", options: ["Le parcours du prospect jusqu'a l'achat", "La progression d'un employe", "Le cycle de vie produit", "La chaine logistique"], correct: 0 },
+    { q: "Le A/B testing c'est ?", options: ["Comparer deux versions pour voir laquelle performe mieux", "Tester deux produits", "Former deux equipes", "Analyser deux concurrents"], correct: 0 },
+    { q: "CPC en publicite digitale signifie ?", options: ["Cout Par Clic", "Contenu Par Campagne", "Client Potentiel Contacte", "Cout Par Conversion"], correct: 0 },
+    { q: "Le marketing viral c'est ?", options: ["Contenu partage massivement de facon organique", "Pub invasive sur mobile", "Campagne par SMS en masse", "Strategie de crise"], correct: 0 },
+  ],
+  COMPTA: [
+    { q: "Le bilan comptable c'est ?", options: ["Photo de la situation financiere a un instant T", "Compte rendu des ventes", "Liste des employes", "Planning des paiements"], correct: 0 },
+    { q: "La TVA collectee c'est ?", options: ["La TVA facturee aux clients", "La TVA payee aux fournisseurs", "La TVA remboursee par l'Etat", "La TVA sur les salaires"], correct: 0 },
+    { q: "Le resultat net c'est ?", options: ["Produits - Charges", "CA - Achats", "Actif - Passif", "Recettes - TVA"], correct: 0 },
+    { q: "L'amortissement c'est ?", options: ["Etalement du cout d'un bien sur sa duree de vie", "Remboursement d'un emprunt", "Reduction du prix de vente", "Augmentation du capital"], correct: 0 },
+    { q: "Une charge fixe c'est ?", options: ["Charge independante du niveau d'activite", "Charge qui varie avec les ventes", "Charge payee annuellement", "Charge liee aux matieres premieres"], correct: 0 },
+    { q: "Le compte de resultat montre ?", options: ["Les produits et charges sur une periode", "La valeur des actifs", "Les dettes de l'entreprise", "Les investissements prevus"], correct: 0 },
+    { q: "Qu'est-ce que la CAF ?", options: ["Ressources generees par l'activite de l'entreprise", "Montant des impots dus", "Valeur des dettes fournisseurs", "Salaire des dirigeants"], correct: 0 },
+    { q: "Le seuil de rentabilite c'est ?", options: ["Le CA a partir duquel l'entreprise est beneficiaire", "Le prix minimum d'un produit", "Le nombre minimum de clients", "La date limite de paiement"], correct: 0 },
   ],
   LOGIQUE: [
     { q: "3 pommes, tu en donnes 2. Combien il t'en reste ?", options: ["0", "1", "2", "3"], correct: 1 },
-    { q: "Prochaine valeur : 2, 4, 8, 16, ... ?", options: ["20", "24", "32", "64"], correct: 2 },
-    { q: "Train part a 8h, arrive a 11h30. Duree du trajet ?", options: ["2h", "2h30", "3h", "3h30"], correct: 3 },
+    { q: "Prochaine valeur : 2, 4, 8, 16 ?", options: ["20", "24", "32", "64"], correct: 2 },
+    { q: "Train part a 8h, arrive a 11h30. Duree ?", options: ["2h", "2h30", "3h", "3h30"], correct: 3 },
+    { q: "Si A > B et B > C, alors ?", options: ["A > C", "C > A", "A = C", "Impossible a dire"], correct: 0 },
+    { q: "Magasin fait -30% sur 100 EUR. Prix final ?", options: ["60 EUR", "70 EUR", "75 EUR", "80 EUR"], correct: 1 },
+    { q: "1 imprimante imprime 10 pages en 2min. Combien en 10min ?", options: ["20", "30", "50", "100"], correct: 2 },
+    { q: "Prochaine valeur : 1, 1, 2, 3, 5, 8 ?", options: ["10", "11", "13", "16"], correct: 2 },
+    { q: "Article a 80 EUR apres -20%. Prix initial ?", options: ["96 EUR", "100 EUR", "104 EUR", "112 EUR"], correct: 1 },
+    { q: "Combien de mois entre mars et novembre ?", options: ["6", "7", "8", "9"], correct: 2 },
+    { q: "Un rectangle de 6x4. Perimetre ?", options: ["20", "24", "10", "48"], correct: 0 },
+  ],
+  PERSO: [
+    { q: "Bug critique 30min avant une demo. Tu fais quoi ?", options: ["Tu paniques", "Tu previens ton responsable et cherches une solution", "Tu ignores", "Tu annules la demo"], correct: 1 },
+    { q: "Desaccord avec ton tuteur. Tu fais quoi ?", options: ["Tu fais ce qu'il dit sans rien dire", "Tu expliques ton point de vue puis tu suis sa decision", "Tu fais a ta facon", "Tu te plaints aux RH"], correct: 1 },
+    { q: "On te confie une tache inconnue. Ta reaction ?", options: ["Tu refuses", "Tu demandes de l'aide et cherches sur internet", "Tu fais semblant de savoir", "Tu attends quelqu'un d'autre"], correct: 1 },
+    { q: "Tu rates une echeance. Tu fais quoi ?", options: ["Tu caches l'erreur", "Tu informes immediatement et proposes une solution", "Tu blames un collegue", "Tu attends que ca se passe"], correct: 1 },
+    { q: "Un collegue fait une erreur qui t'affecte. Tu ?", options: ["Tu cries dessus", "Tu lui parles calmement en prive", "Tu l'ignores", "Tu le signales au manager directement"], correct: 1 },
   ],
 };
+
+function getQuestionsForDomain(domain) {
+  const d = (domain || "").toLowerCase();
+  let domainQuestions = [];
+  if (d.includes("ciel") || d.includes("sio") || d.includes("info") || d.includes("it") || d.includes("cyber") || d.includes("reseau") || d.includes("dev") || d.includes("reseaux")) {
+    domainQuestions = QUESTION_BANKS.IT;
+  } else if (d.includes("commerce") || d.includes("nrc") || d.includes("mco") || d.includes("vente") || d.includes("commercial")) {
+    domainQuestions = QUESTION_BANKS.COMMERCE;
+  } else if (d.includes("market") || d.includes("mmi") || d.includes("pub") || d.includes("com") || d.includes("digital")) {
+    domainQuestions = QUESTION_BANKS.MARKETING;
+  } else if (d.includes("compta") || d.includes("finance") || d.includes("gea") || d.includes("gestion")) {
+    domainQuestions = QUESTION_BANKS.COMPTA;
+  } else {
+    domainQuestions = [...QUESTION_BANKS.IT.slice(0, 4), ...QUESTION_BANKS.COMMERCE.slice(0, 3), ...QUESTION_BANKS.MARKETING.slice(0, 3)];
+  }
+  const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+  const domain5 = shuffle(domainQuestions).slice(0, 5);
+  const logique3 = shuffle(QUESTION_BANKS.LOGIQUE).slice(0, 3);
+  const perso3 = shuffle(QUESTION_BANKS.PERSO).slice(0, 3);
+  return [
+    ...domain5.map(q => ({ ...q, cat: "Technique" })),
+    ...logique3.map(q => ({ ...q, cat: "Logique" })),
+    ...perso3.map(q => ({ ...q, cat: "Caractere" })),
+  ];
+}
 
 const DEMO_PROFILES = [
   { name: "Karim B.", score: 94, domain: "IT / BTS CIEL", city: "Cergy" },
@@ -100,12 +180,8 @@ function ScoreBar({ score, color }) {
   );
 }
 
-function ChallengeFlow({ onDone }) {
-  const all = [
-    ...CHALLENGES.IT.map(q => ({ ...q, cat: "Technique" })),
-    ...CHALLENGES.LOGIQUE.map(q => ({ ...q, cat: "Logique" })),
-    ...CHALLENGES.PERSO.map(q => ({ ...q, cat: "Caractere" })),
-  ];
+function ChallengeFlow({ onDone, domain }) {
+  const all = getQuestionsForDomain(domain);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -326,7 +402,7 @@ export default function Matchkap() {
 
     if (challengeStep === "challenge") return (
       <div style={{ paddingTop: 40, paddingBottom: 80 }}>
-        <ChallengeFlow onDone={handleChallengeComplete} />
+        <ChallengeFlow onDone={handleChallengeComplete} domain={candidatForm.domain} />
       </div>
     );
 
