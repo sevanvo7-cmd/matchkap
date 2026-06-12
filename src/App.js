@@ -35,7 +35,7 @@ async function getProfiles() {
   } catch { return []; }
 }
 
-async function sendCompanyEmail(company_name, sector, spots) {
+async function sendCompanyEmail(company_name, sector, spots, email) {
   try {
     const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
       method: "POST",
@@ -44,7 +44,7 @@ async function sendCompanyEmail(company_name, sector, spots) {
         service_id: EMAILJS_SERVICE,
         template_id: EMAILJS_TEMPLATE,
         user_id: EMAILJS_PUBLIC,
-        template_params: { company_name, sector, spots }
+        template_params: { company_name, sector, spots, email }
       })
     });
     return res.ok;
@@ -174,7 +174,7 @@ export default function Matchkap() {
   const [challengeStep, setChallengeStep] = useState("intro");
   const [finalScore, setFinalScore] = useState(null);
   const [candidatForm, setCandidatForm] = useState({ name: "", domain: "", city: "" });
-  const [companyForm, setCompanyForm] = useState({ name: "", sector: "", spots: "" });
+  const [companyForm, setCompanyForm] = useState({ name: "", sector: "", spots: "", email: "" });
   const [formDone, setFormDone] = useState(false);
   const [profiles, setProfiles] = useState(DEMO_PROFILES);
   const [saving, setSaving] = useState(false);
@@ -207,7 +207,8 @@ export default function Matchkap() {
     await sendCompanyEmail(
       companyForm.name || "Inconnu",
       companyForm.sector || "Non specifie",
-      companyForm.spots || "0"
+      companyForm.spots || "0",
+      companyForm.email || "Non fourni"
     );
   };
 
@@ -366,7 +367,7 @@ export default function Matchkap() {
         </div>
         <div style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 16, padding: 28 }}>
           <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 20 }}>Demande d'acces gratuit</div>
-          {[{ key: "name", placeholder: "Nom de l'entreprise" }, { key: "sector", placeholder: "Secteur (ex: IT, Finance...)" }, { key: "spots", placeholder: "Nombre de postes a pourvoir" }].map(f => (
+          {[{ key: "name", placeholder: "Nom de l'entreprise" }, { key: "email", placeholder: "Email de contact (ex: rh@entreprise.fr)" }, { key: "sector", placeholder: "Secteur (ex: IT, Finance...)" }, { key: "spots", placeholder: "Nombre de postes a pourvoir" }].map(f => (
             <input key={f.key} value={companyForm[f.key]} onChange={e => setCompanyForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder} style={{ width: "100%", background: COLORS.bg, border: `1px solid ${COLORS.border}`, borderRadius: 10, color: COLORS.text, fontSize: 14, padding: "12px 16px", marginBottom: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
           ))}
           <button onClick={handleCompanySubmit} style={{ width: "100%", background: COLORS.green, border: "none", borderRadius: 12, padding: "14px", color: "#000", fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", marginTop: 8 }}>
