@@ -341,6 +341,16 @@ export default function Matchkap() {
     getProfiles().then(data => { if (data && data.length > 0) setProfiles(data); });
   }, []);
 
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap";
+    document.head.appendChild(link);
+    const style = document.createElement("style");
+    style.textContent = "* { box-sizing: border-box; margin: 0; padding: 0; } body { background: #09090B; overflow-x: hidden; } select option { background: #111113; color: #FAFAFA; }";
+    document.head.appendChild(style);
+  }, []);
+
   const goCandidat = () => { setPage("candidat"); setChallengeStep("intro"); };
 
   const handleChallengeComplete = async (score) => {
@@ -364,7 +374,7 @@ export default function Matchkap() {
       background: C.bg + "f0", backdropFilter: "blur(16px)",
       borderBottom: `1px solid ${C.border}`,
       height: 56, display: "flex", alignItems: "center",
-      justifyContent: "space-between", padding: "0 16px",
+      justifyContent: "space-between", padding: "0 16px", width: "100%", maxWidth: "100%",
     }}>
       <span onClick={() => setPage("home")} style={{ fontWeight: 800, fontSize: 17, cursor: "pointer", letterSpacing: -.4, color: C.text }}>
         match<span style={{ color: C.blue }}>kap</span>
@@ -720,8 +730,7 @@ export default function Matchkap() {
   );
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", overflowX: "hidden", maxWidth: "100vw" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'); * { box-sizing: border-box; margin: 0; padding: 0; } body { background: #09090B; }`}</style>
+    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", overflowX: "hidden", width: "100%", maxWidth: "100%" }}>
       {Nav()}
       {page === "home" && Home()}
       {page === "candidat" && Candidat()}
