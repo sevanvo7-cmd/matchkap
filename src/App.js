@@ -178,6 +178,10 @@ export default function Matchkap() {
   const [formDone, setFormDone] = useState(false);
   const [profiles, setProfiles] = useState(DEMO_PROFILES);
   const [saving, setSaving] = useState(false);
+  const [candidatError, setCandidatError] = useState("");
+  const [companyError, setCompanyError] = useState("");
+  const [companyAccess, setCompanyAccess] = useState(false);
+  const [companyCode, setCompanyCode] = useState("");
 
   useEffect(() => {
     getProfiles().then(data => {
@@ -307,7 +311,14 @@ export default function Matchkap() {
             <input key={f.key} value={candidatForm[f.key]} onChange={e => setCandidatForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder} style={{ width: "100%", background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 10, color: COLORS.text, fontSize: 14, padding: "12px 16px", marginBottom: 10, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
           ))}
         </div>
-        <button onClick={() => { setChallengeStep("challenge"); }} style={{ width: "100%", background: COLORS.accent, border: "none", borderRadius: 12, padding: "16px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+        {candidatError && <div style={{ color: COLORS.orange, fontSize: 13, marginBottom: 10, textAlign: "left" }}>{candidatError}</div>}
+        <button onClick={() => {
+          if (!candidatForm.name.trim()) { setCandidatError("Entre ton prenom et nom."); return; }
+          if (!candidatForm.domain.trim()) { setCandidatError("Entre ta formation visee."); return; }
+          if (!candidatForm.city.trim()) { setCandidatError("Entre ta ville."); return; }
+          setCandidatError("");
+          setChallengeStep("challenge");
+        }} style={{ width: "100%", background: COLORS.accent, border: "none", borderRadius: 12, padding: "16px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
           Commencer le challenge
         </button>
       </div>
@@ -344,6 +355,27 @@ export default function Matchkap() {
   };
 
   const renderEntreprise = () => {
+    if (!companyAccess) return (
+      <div style={{ maxWidth: 480, margin: "80px auto", padding: "0 20px", textAlign: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 20 }}>🏢</div>
+        <h2 style={{ fontSize: 28, fontWeight: 900, marginBottom: 12 }}>Espace Entreprises</h2>
+        <p style={{ color: COLORS.muted, marginBottom: 32, lineHeight: 1.6 }}>Cet espace est reserve aux recruteurs. Entrez le code d'acces ou contactez-nous pour en obtenir un.</p>
+        <div style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 16, padding: 24 }}>
+          <input value={companyCode} onChange={e => setCompanyCode(e.target.value)} placeholder="Code d'acces entreprise" style={{ width: "100%", background: COLORS.bg, border: `1px solid ${COLORS.border}`, borderRadius: 10, color: COLORS.text, fontSize: 14, padding: "12px 16px", marginBottom: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+          <button onClick={() => {
+            if (companyCode === "MATCHKAP2026") { setCompanyAccess(true); }
+            else { setCompanyError("Code incorrect."); }
+          }} style={{ width: "100%", background: COLORS.accent, border: "none", borderRadius: 10, padding: "12px", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", marginBottom: 10 }}>
+            Acceder
+          </button>
+          {companyError && <div style={{ color: COLORS.orange, fontSize: 13 }}>{companyError}</div>}
+          <div style={{ borderTop: `1px solid ${COLORS.border}`, marginTop: 16, paddingTop: 16 }}>
+            <p style={{ color: COLORS.muted, fontSize: 13, marginBottom: 8 }}>Pas encore de code ?</p>
+            <a href="mailto:sevanvo7@gmail.com?subject=Demande acces Matchkap" style={{ color: COLORS.accent, fontSize: 13, fontWeight: 600 }}>Contacter Matchkap →</a>
+          </div>
+        </div>
+      </div>
+    );
     if (formDone && page === "entreprise") return (
       <div style={{ maxWidth: 560, margin: "60px auto", padding: "0 20px 80px", textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 20 }}>✅</div>
@@ -370,7 +402,15 @@ export default function Matchkap() {
           {[{ key: "name", placeholder: "Nom de l'entreprise" }, { key: "email", placeholder: "Email de contact (ex: rh@entreprise.fr)" }, { key: "sector", placeholder: "Secteur (ex: IT, Finance...)" }, { key: "spots", placeholder: "Nombre de postes a pourvoir" }].map(f => (
             <input key={f.key} value={companyForm[f.key]} onChange={e => setCompanyForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder} style={{ width: "100%", background: COLORS.bg, border: `1px solid ${COLORS.border}`, borderRadius: 10, color: COLORS.text, fontSize: 14, padding: "12px 16px", marginBottom: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
           ))}
-          <button onClick={handleCompanySubmit} style={{ width: "100%", background: COLORS.green, border: "none", borderRadius: 12, padding: "14px", color: "#000", fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", marginTop: 8 }}>
+          {companyError && <div style={{ color: COLORS.orange, fontSize: 13, marginBottom: 8 }}>{companyError}</div>}
+          <button onClick={() => {
+            if (!companyForm.name.trim()) { setCompanyError("Entre le nom de l'entreprise."); return; }
+            if (!companyForm.email.trim() || !companyForm.email.includes("@")) { setCompanyError("Entre un email valide."); return; }
+            if (!companyForm.sector.trim()) { setCompanyError("Entre le secteur d'activite."); return; }
+            if (!companyForm.spots.trim() || isNaN(companyForm.spots)) { setCompanyError("Entre un nombre de postes valide."); return; }
+            setCompanyError("");
+            handleCompanySubmit();
+          }} style={{ width: "100%", background: COLORS.green, border: "none", borderRadius: 12, padding: "14px", color: "#000", fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", marginTop: 8 }}>
             Acces gratuit 30 jours
           </button>
           <p style={{ color: COLORS.muted, fontSize: 12, textAlign: "center", marginTop: 12 }}>Sans engagement · Sans CB</p>
