@@ -88,6 +88,18 @@ const QUESTION_BANKS = {
     { q: "La CAF c'est ?", options: ["Ressources generees par l'activite de l'entreprise", "Montant des impots dus", "Valeur des dettes fournisseurs", "Salaire des dirigeants"], correct: 0 },
     { q: "Le seuil de rentabilite c'est ?", options: ["Le CA a partir duquel l'entreprise est beneficiaire", "Le prix minimum d'un produit", "Le nombre minimum de clients", "La date limite de paiement"], correct: 0 },
   ],
+  COMMUNICATION: [
+    { q: "Qu'est-ce qu'un plan de communication ?", options: ["Document qui definit les objectifs et actions de communication", "Liste des contacts presse", "Budget annuel publicite", "Contrat avec une agence"], correct: 0 },
+    { q: "La communication interne c'est ?", options: ["Communication entre employes de l'entreprise", "Pub sur les reseaux sociaux", "Relations avec la presse", "Communication vers les clients"], correct: 0 },
+    { q: "Qu'est-ce qu'une identite visuelle ?", options: ["Logo, couleurs, typo qui representent une marque", "Photo de profil d'un employe", "Signature d'email", "Fond d'ecran du site web"], correct: 0 },
+    { q: "Un communique de presse c'est ?", options: ["Document envoye aux journalistes pour annoncer une info", "Pub dans un magazine", "Post sur Instagram", "Newsletter client"], correct: 0 },
+    { q: "La cible d'une campagne com c'est ?", options: ["Le public a qui s'adresse le message", "Le budget de la campagne", "Le canal de diffusion", "La date de lancement"], correct: 0 },
+    { q: "Le storytelling c'est ?", options: ["Technique narrative pour engager l'audience", "Type de format video", "Logiciel de creation", "Strategie de prix"], correct: 0 },
+    { q: "Qu'est-ce que l'image de marque ?", options: ["Perception qu'a le public d'une marque", "Logo d'une entreprise", "Slogan publicitaire", "Photo du produit"], correct: 0 },
+    { q: "Un media owned c'est ?", options: ["Canal detenu par la marque (site, reseaux)", "Publicite achetee", "Article de presse gratuit", "Bouche a oreille"], correct: 0 },
+    { q: "La charte editoriale definit ?", options: ["Le ton, le style et les regles d'ecriture d'une marque", "Les couleurs de la marque", "Le budget communication", "Les partenaires medias"], correct: 0 },
+    { q: "Un influenceur macro c'est ?", options: ["Createur avec plus de 100 000 abonnes", "Createur avec moins de 10 000 abonnes", "Un journaliste", "Un directeur marketing"], correct: 0 },
+  ],
   LOGIQUE: [
     { q: "3 pommes, tu en donnes 2. Combien il t'en reste ?", options: ["0", "1", "2", "3"], correct: 1 },
     { q: "Prochaine valeur : 2, 4, 8, 16 ?", options: ["20", "24", "32", "64"], correct: 2 },
@@ -110,13 +122,15 @@ const QUESTION_BANKS = {
 };
 
 function getQuestionsForDomain(domain) {
-  const d = (domain || "").toLowerCase();
+  const d = (domain || "").toLowerCase().replace(/[éèê]/g, "e").replace(/[àâ]/g, "a").replace(/[î]/g, "i").replace(/[ô]/g, "o").replace(/[û]/g, "u");
   let domainQuestions = [];
   if (d.includes("ciel") || d.includes("sio") || d.includes("info") || d.includes("it") || d.includes("cyber") || d.includes("reseau") || d.includes("dev") || d.includes("reseaux")) {
     domainQuestions = QUESTION_BANKS.IT;
   } else if (d.includes("commerce") || d.includes("nrc") || d.includes("mco") || d.includes("vente") || d.includes("commercial")) {
     domainQuestions = QUESTION_BANKS.COMMERCE;
-  } else if (d.includes("market") || d.includes("mmi") || d.includes("pub") || d.includes("com") || d.includes("digital")) {
+  } else if (d.includes("commun") || d.includes("info-com") || d.includes("journa") || d.includes("media") || d.includes("redac")) {
+    domainQuestions = QUESTION_BANKS.COMMUNICATION;
+  } else if (d.includes("market") || d.includes("mmi") || d.includes("pub") || d.includes("digital")) {
     domainQuestions = QUESTION_BANKS.MARKETING;
   } else if (d.includes("compta") || d.includes("finance") || d.includes("gea") || d.includes("gestion")) {
     domainQuestions = QUESTION_BANKS.COMPTA;
@@ -306,11 +320,14 @@ function ChallengeFlow({ onDone, domain }) {
   );
 }
 
+const isMobile = typeof screen !== "undefined" && screen.width < 640;
+
 export default function Matchkap() {
+
   const [page, setPage] = useState("home");
   const [challengeStep, setChallengeStep] = useState("intro");
   const [finalScore, setFinalScore] = useState(null);
-  const [candidatForm, setCandidatForm] = useState({ name: "", domain: "", city: "" });
+  const [candidatForm, setCandidatForm] = useState({ name: "", domain: "", diplome: "", specialisation: "", city: "" });
   const [companyForm, setCompanyForm] = useState({ name: "", email: "", sector: "", spots: "" });
   const [formDone, setFormDone] = useState(false);
   const [profiles, setProfiles] = useState(DEMO_PROFILES);
@@ -347,24 +364,39 @@ export default function Matchkap() {
       background: C.bg + "f0", backdropFilter: "blur(16px)",
       borderBottom: `1px solid ${C.border}`,
       height: 56, display: "flex", alignItems: "center",
-      justifyContent: "space-between", padding: "0 20px",
+      justifyContent: "space-between", padding: "0 16px",
     }}>
       <span onClick={() => setPage("home")} style={{ fontWeight: 800, fontSize: 17, cursor: "pointer", letterSpacing: -.4, color: C.text }}>
         match<span style={{ color: C.blue }}>kap</span>
       </span>
-      <nav style={{ display: "flex", gap: 2 }}>
-        {[["home","Accueil"],["candidat","Candidats"],["entreprise","Entreprises"],["classement","Classement"]].map(([p, label]) => (
-          <button key={p} onClick={() => { setPage(p); if (p === "candidat") setChallengeStep("intro"); }}
-            style={btn({
-              padding: "5px 11px", fontSize: 13,
-              background: page === p ? C.s2 : "transparent",
-              border: `1px solid ${page === p ? C.border : "transparent"}`,
-              color: page === p ? C.text : C.t2,
-            })}>{label}</button>
-        ))}
-      </nav>
-      <button onClick={goCandidat} style={btn({ background: C.blue, color: "#fff", padding: "7px 14px", fontSize: 13 })}>
-        Passer le challenge
+      {!isMobile && (
+        <nav style={{ display: "flex", gap: 2 }}>
+          {[["home","Accueil"],["candidat","Candidats"],["entreprise","Entreprises"],["classement","Classement"]].map(([p, label]) => (
+            <button key={p} onClick={() => { setPage(p); if (p === "candidat") setChallengeStep("intro"); }}
+              style={btn({
+                padding: "5px 11px", fontSize: 13,
+                background: page === p ? C.s2 : "transparent",
+                border: `1px solid ${page === p ? C.border : "transparent"}`,
+                color: page === p ? C.text : C.t2,
+              })}>{label}</button>
+          ))}
+        </nav>
+      )}
+      {isMobile && (
+        <div style={{ display: "flex", gap: 6 }}>
+          {[["candidat","Challenge"],["classement","Top"],["entreprise","RH"]].map(([p, label]) => (
+            <button key={p} onClick={() => { setPage(p); if (p === "candidat") setChallengeStep("intro"); }}
+              style={btn({
+                padding: "5px 10px", fontSize: 12,
+                background: page === p ? C.s2 : "transparent",
+                border: `1px solid ${page === p ? C.border : "transparent"}`,
+                color: page === p ? C.text : C.t2,
+              })}>{label}</button>
+          ))}
+        </div>
+      )}
+      <button onClick={goCandidat} style={btn({ background: C.blue, color: "#fff", padding: isMobile ? "7px 10px" : "7px 14px", fontSize: isMobile ? 12 : 13, whiteSpace: "nowrap" })}>
+        {isMobile ? "Go →" : "Passer le challenge"}
       </button>
     </header>
   );
@@ -394,10 +426,15 @@ export default function Matchkap() {
       </section>
 
       <section style={{ borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, background: C.s1 }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 20px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 20px", display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)" }}>
           {[["15 min", "Pour passer le challenge"], ["94%", "Taux de visibilite RH"], ["0 EUR", "Pour les candidats"], [profiles.length+"", "Profils dans la base"]].map(([n, l], i) => (
-            <div key={i} style={{ padding: "24px 16px", borderRight: i < 3 ? `1px solid ${C.border}` : "none", textAlign: "center" }}>
-              <div style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 4 }}>{n}</div>
+            <div key={i} style={{
+              padding: "20px 16px",
+              borderRight: isMobile ? (i % 2 === 0 ? `1px solid ${C.border}` : "none") : (i < 3 ? `1px solid ${C.border}` : "none"),
+              borderBottom: isMobile && i < 2 ? `1px solid ${C.border}` : "none",
+              textAlign: "center"
+            }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 4 }}>{n}</div>
               <div style={{ fontSize: 12, color: C.t3, lineHeight: 1.4 }}>{l}</div>
             </div>
           ))}
@@ -439,7 +476,7 @@ export default function Matchkap() {
       </section>
 
       <section style={{ maxWidth: 800, margin: "0 auto 0", padding: "0 20px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 12 }}>
           {[
             { num: "01", title: "Tu remplis ton profil", desc: "Prenom, formation visee, ville. 30 secondes." },
             { num: "02", title: "Tu passes le challenge", desc: "11 questions adaptees a ton domaine. Score sur 100." },
@@ -466,7 +503,26 @@ export default function Matchkap() {
         <div style={{ background: C.s1, border: `1px solid ${C.border}`, borderRadius: 10, padding: 20, marginBottom: 16 }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: C.t3, letterSpacing: .5, marginBottom: 12 }}>TES INFORMATIONS</div>
           <Input value={candidatForm.name} onChange={e => setCandidatForm(p => ({ ...p, name: e.target.value }))} placeholder="Prenom et nom" />
-          <Input value={candidatForm.domain} onChange={e => setCandidatForm(p => ({ ...p, domain: e.target.value }))} placeholder="Formation visee (ex: BTS CIEL, BTS NRC...)" />
+          <select value={candidatForm.diplome} onChange={e => setCandidatForm(p => ({ ...p, diplome: e.target.value, specialisation: "", domain: e.target.value }))}
+            style={{ width: "100%", boxSizing: "border-box", background: C.s1, border: `1px solid ${C.border}`, borderRadius: 8, color: candidatForm.diplome ? C.text : C.t3, fontSize: 14, padding: "11px 14px", fontFamily: "Inter, -apple-system, sans-serif", outline: "none", marginBottom: 10, appearance: "none" }}>
+            <option value="" disabled>Type de diplome vise</option>
+            <option value="BTS">BTS</option>
+            <option value="BUT">BUT</option>
+            <option value="Bachelor">Bachelor (Bac+3)</option>
+            <option value="Licence Pro">Licence Professionnelle</option>
+            <option value="Bac Pro">Bac Pro</option>
+          </select>
+          {candidatForm.diplome && (
+            <select value={candidatForm.specialisation} onChange={e => setCandidatForm(p => ({ ...p, specialisation: e.target.value, domain: p.diplome + " " + e.target.value }))}
+              style={{ width: "100%", boxSizing: "border-box", background: C.s1, border: `1px solid ${C.border}`, borderRadius: 8, color: candidatForm.specialisation ? C.text : C.t3, fontSize: 14, padding: "11px 14px", fontFamily: "Inter, -apple-system, sans-serif", outline: "none", marginBottom: 10, appearance: "none" }}>
+              <option value="" disabled>Specialisation</option>
+              {candidatForm.diplome === "BTS" && [["CIEL","CIEL - Info, Electronique, Reseaux"],["SIO","SIO - Services Informatiques"],["SN","SN - Systemes Numeriques"],["NDRC","NDRC - Negociation Relation Client"],["MCO","MCO - Management Commercial"],["Communication","Communication"],["CG","CG - Comptabilite et Gestion"],["Banque","Banque"],["Assurance","Assurance"],["Autre","Autre BTS"]].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+              {candidatForm.diplome === "BUT" && [["Informatique","Informatique"],["Reseaux","Reseaux et Telecom"],["MMI","MMI - Multimedia et Internet"],["Info-Com","Information-Communication"],["GEA","Gestion des Entreprises"],["TC","Techniques de Commercialisation"],["Autre","Autre BUT"]].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+              {candidatForm.diplome === "Bachelor" && [["Bachelor Informatique","Informatique / Cybersecurite"],["Bachelor Marketing","Marketing / Digital"],["Bachelor Commerce","Commerce / Business"],["Bachelor Communication","Communication"],["Bachelor Finance","Finance / Gestion"],["Autre Bachelor","Autre"]].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+              {candidatForm.diplome === "Licence Pro" && [["LP Informatique","Informatique / Reseaux"],["LP Commerce","Commerce / Vente"],["LP Communication","Communication"],["LP Gestion","Gestion / Comptabilite"],["Autre LP","Autre"]].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+              {candidatForm.diplome === "Bac Pro" && [["Bac Pro SEN","SEN - Systemes Electroniques"],["Bac Pro Commerce","Commerce"],["Bac Pro Gestion","Gestion-Administration"],["Autre Bac Pro","Autre"]].map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
+          )}
           <Input value={candidatForm.city} onChange={e => setCandidatForm(p => ({ ...p, city: e.target.value }))} placeholder="Ville" />
         </div>
         <div style={{ background: C.s1, border: `1px solid ${C.border}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
@@ -486,7 +542,8 @@ export default function Matchkap() {
         {candidatError && <div style={{ color: C.red, fontSize: 13, marginBottom: 12, padding: "10px 14px", background: C.red + "12", borderRadius: 8, border: `1px solid ${C.red}30` }}>{candidatError}</div>}
         <button onClick={() => {
           if (!candidatForm.name.trim()) { setCandidatError("Entre ton prenom et nom."); return; }
-          if (!candidatForm.domain.trim()) { setCandidatError("Entre ta formation visee."); return; }
+          if (!candidatForm.diplome) { setCandidatError("Selectionne ton type de diplome."); return; }
+          if (!candidatForm.specialisation) { setCandidatError("Selectionne ta specialisation."); return; }
           if (!candidatForm.city.trim()) { setCandidatError("Entre ta ville."); return; }
           setCandidatError("");
           setChallengeStep("challenge");
@@ -579,7 +636,7 @@ export default function Matchkap() {
 
     return (
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 20px 80px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 24, alignItems: "start" }}>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: C.t3, letterSpacing: .5, marginBottom: 8 }}>POUR LES RECRUTEURS</div>
             <h2 style={{ fontSize: 26, fontWeight: 800, color: C.text, letterSpacing: -.5, marginBottom: 12 }}>Recrutez sur les competences.</h2>
@@ -663,13 +720,13 @@ export default function Matchkap() {
   );
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
+    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", overflowX: "hidden", maxWidth: "100vw" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'); * { box-sizing: border-box; margin: 0; padding: 0; } body { background: #09090B; }`}</style>
-      <Nav />
-      {page === "home" && <Home />}
-      {page === "candidat" && <Candidat />}
-      {page === "entreprise" && <Entreprise />}
-      {page === "classement" && <Classement />}
+      {Nav()}
+      {page === "home" && Home()}
+      {page === "candidat" && Candidat()}
+      {page === "entreprise" && Entreprise()}
+      {page === "classement" && Classement()}
     </div>
   );
 }
